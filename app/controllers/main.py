@@ -1,10 +1,13 @@
 from app import app
 from app.models.tables import Todo, TodoSchema
 from flask import Flask, render_template, request, jsonify
+from sqlalchemy.sql.expression import func
+
 from app import db
 from app import ma
 
 #schema to serialize
+single_schema = TodoSchema()
 multiple_schema = TodoSchema(many=True)
 
 #main route
@@ -16,20 +19,20 @@ def index():
 	output = multiple_schema.dump(list).data
 
 	#CRUD actions via AJAX
-	#create todo (receives 'todo', save and returns all entries from table or 'error')
+	#create todo (receives 'todo', save and returns an object contaning a new_id {'new_id':new_id} or an error string)
 	if request.method == 'POST' and request.headers['CRUD'] == 'CREATE':
-		try:
-			todo = request.form['todo']
-			if todo:
+		todo = request.form['todo']
+		if todo:
+			try:
 				t = Todo(item=todo)
 				db.session.add(t)
 				db.session.commit()
-				list = Todo.query.all()
-				output = multiple_schema.dump(list).data
-				return jsonify(output)
-		except Exception as e:
-			return('error'+str(e))
-		
+				new_id = str(db.session.query(func.max(Todo.id)).scalar())
+				return(jsonify({'new_id':new_id}))
+			except Exception as e:
+				return('error'+str(e))
+		else:
+			return('write a new todo')
 
 	#read all todos (returns all rows from the table)
 	elif request.method == 'POST' and request.headers['CRUD'] == 'ALL':
@@ -49,7 +52,7 @@ def index():
 		output = multiple_schema.dump(list).data
 		return jsonify(output)
 
-	#update todo (receives 'id', 'todo', 'status', save and returns 'success' or 'error')
+	#update todo (receives 'id', 'todo', 'status', save and returns string 'success' or an error string)
 	elif request.method == 'POST' and request.headers['CRUD'] == 'UP':
 		try:
 			id = request.form['id']
@@ -65,7 +68,7 @@ def index():
 		except Exception as e:
 			return('error'+str(e))
 
-	#delete todo (receives 'id', delete and returns 'success' or 'error')
+	#delete todo (receives 'id', delete and returns string 'success' or an error string)
 	elif request.method == 'POST' and request.headers['CRUD'] == 'DEL':
 		try:
 			id = request.form['id']
@@ -75,4 +78,4 @@ def index():
 		except Exception as e:
 			return('error'+str(e))
 
-	return render_template('index.html', list = list)	
+	return render_template('index.html', list = list)
