@@ -12,3 +12,6 @@ class Todo(db.Model):
 class TodoSchema(ma.Schema):
     class Meta:
        fields = ('id', 'item', 'status')
+
+
+db.create_all()

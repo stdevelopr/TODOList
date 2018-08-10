@@ -1,7 +1,8 @@
 $(document).ready(function(){
 	//create a new todo
 	$("#create").click(function(){
-		var todo = $('#todo').val()
+		var todo = $('#todo').val();
+		var count = $("#count").text();
 		$.ajax({
 			url:'/',
 			type:'POST',
@@ -14,6 +15,13 @@ $(document).ready(function(){
 					//append the result if tbody is all or pending
 					if($('tbody').attr('orig') != 'completed'){
 						append(new_entry);
+						$("#todo").val('');
+						count++;
+						$("#count").html(count);
+						$("html, body").animate({ scrollTop: $(document).height()-$(window).height() });
+					}
+					else{
+						alert('Todo created!');
 						$("#todo").val('');
 					}
 				}
@@ -75,6 +83,7 @@ $(document).ready(function(){
 		var id= $("#modal_update").attr('num');
 		var modal_status = $("#modal_update").attr('status');
 		var todo = $('#modal_input').val();
+		var count = $("#count").text();
 		//call orign
 		var origin = $("#modal_update").attr('orig');
 		//new defined status
@@ -92,7 +101,9 @@ $(document).ready(function(){
 						$('#todo_'+id).text(todo);
 						//delete row is modal_status differs from new status and orign is not all
 						if(modal_status == 'false' && origin !='all'){
-							$("#"+id).remove()
+							$("#"+id).remove();
+							count--;
+							$("#count").html(count);
 						}
 						else{
 							$("#"+id).attr('class', true);
@@ -115,7 +126,9 @@ $(document).ready(function(){
 						$('#todo_'+id).text(todo);
 						//delete row is modal_status differs from new status and orign is not all
 						if(modal_status == 'true' && origin !='all'){
-							$("#"+id).remove()
+							$("#"+id).remove();
+							count--;
+							$("#count").html(count);
 						}
 						else{
 							$("#"+id).attr('class', false);
@@ -133,6 +146,7 @@ $(document).ready(function(){
 	// AJAX delete from table 
 	$('table').on("click", "button.delete",function(){
 		var id= $(this).closest('tr').attr('id');
+		var count = $("#count").text();
 		$.ajax({
 			url:'/',
 			type:'POST',
@@ -141,6 +155,8 @@ $(document).ready(function(){
 			success:function(resp){
 				if(resp=='success'){
 					$("#"+id).remove()
+					count--;
+					$("#count").html(count);
 				}
 				else{
 					alert(resp)
@@ -154,6 +170,7 @@ $(document).ready(function(){
 		var origin = $("tbody").attr('orig');
 		var id= $(this).closest('tr').attr('id');
 		var todo = $('#todo_'+id).text();
+		var count = $("#count").text();
 		$.ajax({
 			url:'/',
 			type:'POST',
@@ -163,7 +180,10 @@ $(document).ready(function(){
 				if(resp=='success'){
 					$("#"+id).attr('class', true);
 					if(origin=='pending'){
-						$("#"+id).remove()
+						$("#"+id).remove();
+						count--;
+						$("#count").html(count);
+
 					}
 				}
 				else{
@@ -191,14 +211,17 @@ $(document).ready(function(){
 
 	//receives JSON object {id: number, item: string, status: boolean}, loop and and appends to tbody
 	var append = function(resp){
+		var c = 0;
 		$.each(resp, function(key, value) {
-			mark= '<th class=ok><button id=ok_'+value['id']+' class="ok btn btn-warning">OK</button></th>'
+			mark= '<th class=ok><button id=ok_'+value['id']+' class="ok btn btn-warning"><i class="fas fa-check"></i></button></th>'
 			todo = '<th id=todo_'+value['id']+'>'+value['item']+'</th>'
-			edit_button= '<th class=edit><button id=edit_'+value['id']+' type="button" class="btn btn-primary edit" data-toggle="modal" data-target="#EditModal">Edit</button></th>'
-			del_button= '<th class="delete"><button id=del_'+value['id']+' class="delete btn btn-danger">Delete</button></th>'
+			edit_button= '<th class=edit><button id=edit_'+value['id']+' type="button" class="btn btn-primary edit" data-toggle="modal" data-target="#EditModal"><i class="fas fa-edit"></i></button></th>'
+			del_button= '<th class="delete"><button id=del_'+value['id']+' class="delete btn btn-danger"><i class="fas fa-backspace"></i></button></th>'
 		    $('tbody').append($("<tr id='"+value['id']+"' class='"+value['status']+"'>"+mark+todo+edit_button+del_button+"</tr>"));
 		    $('#modal_input').attr('value', value['id'])
+		    c++;
 		});
+		$("#count").html(c);
 	}
 
 
@@ -210,7 +233,7 @@ $(window).on('load', function() {
 	$(document).click(function (event) {
         var clickover = $(event.target);
         var _opened = $(".navbar-collapse").hasClass("show");
-        if (_opened === true && !clickover.hasClass("navbar-toggler")) {
+        if (_opened === true && event.target.nodeName != 'INPUT' && $('#todo').val() != '' && !clickover.hasClass("navbar-toggler")) {
              $(".navbar-toggler").click();
         }
     });

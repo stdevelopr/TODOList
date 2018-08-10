@@ -6,9 +6,6 @@ app = Flask(__name__)
 app.config.from_object('config')
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
-db.create_all()
-
 
 from app.controllers import main
 from app.models.tables import Todo, TodoSchema
-
