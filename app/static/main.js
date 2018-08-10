@@ -225,15 +225,17 @@ $(document).ready(function(){
 	}
 
 
-
+	$("#all").click();
 })
 
 $(window).on('load', function() {
-    $("#all").click();
 	$(document).click(function (event) {
         var clickover = $(event.target);
         var _opened = $(".navbar-collapse").hasClass("show");
-        if (_opened === true && event.target.nodeName != 'INPUT' && $('#todo').val() != '' && !clickover.hasClass("navbar-toggler")) {
+        //condition to not collapse navbar when click create with no entry;
+        var condition = (clickover.text() == 'CREATE' && $('#todo').val() == '');
+        console.log(condition);
+        if (_opened === true && event.target.nodeName != 'INPUT' &&  !condition && !clickover.hasClass("navbar-toggler")) {
              $(".navbar-toggler").click();
         }
     });
