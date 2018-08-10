@@ -19,26 +19,30 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button id="modal_update" type="button" class="btn btn-primary">Update</button>
+        <button id="modal_update" type="button" class="btn btn-primary" orig="all">Update</button>
       </div>
     </div>
   </div>
 </div>
 
+
 <div class="count">
     <p class="d-inline-block">List: </p>
-    <p id="test" class="d-inline-block"></p>
-    <p id="count" class="d-inline-block ml-2">COUNT</p>
+    <p id="test" class="d-inline-block">All</p>
+    <p id="count" class="d-inline-block ml-2">{{list|length}}</p>
     <p class="d-inline-block">entries</p>
 </div>
 
-<div class="container-fluid text-center table_container">
-<div class="table-responsive">
- 	<table class="table">
-   		<tbody>
-
-		</tbody>
-	</table>
-</div>
-</div>
+<table class="table">
+  <tbody orig="all">
+    {%for item in list%}
+    <tr id={{item.id}} class={%if item.status== True%}true{%else%}false{%endif%}>
+      <th class=ok><button id=ok_{{item.id}} class="ok btn btn-warning"><i class="fas fa-check"></i></button></th>
+      <th id=todo_{{item.id}}>{{item.item}}</th>
+      <th class=edit><button id=edit_{{item.id}} type="button" class="btn btn-primary edit" data-toggle="modal" data-target="#EditModal"><i class="fas fa-edit"></i></button></th>
+      <th class="delete"><button id=del_{{item.id}} class="delete btn btn-danger"><i class="fas fa-backspace"></i></button></th>
+    </tr>
+    {%endfor%}
+  </tbody>
+</table>
 {% endblock %}

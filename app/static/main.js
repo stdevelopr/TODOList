@@ -225,7 +225,7 @@ $(document).ready(function(){
 	}
 
 
-	$("#all").click();
+	// $("#all").click();
 })
 
 $(window).on('load', function() {
