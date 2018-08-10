@@ -200,9 +200,19 @@ $(document).ready(function(){
 		    $('#modal_input').attr('value', value['id'])
 		});
 	}
+
+
+
 })
 
 $(window).on('load', function() {
     $("#all").click();
+	$(document).click(function (event) {
+        var clickover = $(event.target);
+        var _opened = $(".navbar-collapse").hasClass("show");
+        if (_opened === true && !clickover.hasClass("navbar-toggler")) {
+             $(".navbar-toggler").click();
+        }
+    });
 })
 
