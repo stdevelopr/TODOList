@@ -223,9 +223,6 @@ $(document).ready(function(){
 		});
 		$("#count").html(c);
 	}
-
-
-	// $("#all").click();
 })
 
 $(window).on('load', function() {
@@ -234,7 +231,6 @@ $(window).on('load', function() {
         var _opened = $(".navbar-collapse").hasClass("show");
         //condition to not collapse navbar when click create with no entry;
         var condition = (clickover.text() == 'CREATE' && $('#todo').val() == '');
-        console.log(condition);
         if (_opened === true && event.target.nodeName != 'INPUT' &&  !condition && !clickover.hasClass("navbar-toggler")) {
              $(".navbar-toggler").click();
         }
