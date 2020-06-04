@@ -2,5 +2,5 @@ import os
 
 DEBUG = True
 path = os.getcwd()
-SQLALCHEMY_DATABASE_URI = os.environ['TODO']
+SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 SQLALCHEMY_TRACK_MODIFICATIONS= True
